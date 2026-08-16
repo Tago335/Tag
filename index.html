@@ -1,903 +1,779 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوتيك كيان | KAYAN BOUTIQUE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوتيك كيان | KAYAN BOUTIQUE</title>
+    <!-- خطوط جوجل وأيقونات Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- الخطوط والأيقونات -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #a27a4d;
+            --primary-dark: #825f38;
+            --secondary: #1a1a1a;
+            --light-bg: #fdfbf9;
+            --white: #ffffff;
+            --gray: #666666;
+            --border: #eedec7;
+            --success: #25D366;
+            --danger: #e74c3c;
+            --shadow: 0 10px 25px rgba(0,0,0,0.06);
+            --transition: all 0.3s ease;
+        }
 
-<!-- مكتبات Firebase السحابية للربط الفوري المباشر -->
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
 
-<style>
-:root {
---primary: #c59b6d;
---primary-dark: #a27a4d;
---secondary: #1a1a1a;
---light-bg: #fdfbf9;
---white: #ffffff;
---gray: #666666;
---border: #eedecf;
---success: #25D366;
---danger: #e74c3c;
---shadow: 0 10px 25px rgba(0,0,0,0.06);
---transition: all 0.25s ease;
-}
+        body {
+            background-color: var(--light-bg);
+            color: var(--secondary);
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-body { background-color: var(--light-bg); color: var(--secondary); overflow-x: hidden; padding-bottom: 60px; }
+        /* الشريط العلوي */
+        .top-bar {
+            background: var(--secondary);
+            color: #d8c3a5;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            text-align: center;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .top-bar a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-/* Top Bar */
-.top-bar {
-background: var(--secondary);
-color: #ccc;
-font-size: 0.85rem;
-padding: 8px 20px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-.top-bar a { color: var(--primary); text-decoration: none; font-weight: bold; }
+        /* الهيدر */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
 
-/* Header */
-header {
-background: rgba(255, 255, 255, 0.96);
-backdrop-filter: blur(10px);
-position: sticky;
-top: 0;
-z-index: 1000;
-box-shadow: 0 2px 15px rgba(0,0,0,0.04);
-}
-.navbar {
-max-width: 1250px;
-margin: 0 auto;
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 16px 20px;
-}
-.logo { font-size: 1.8rem; font-weight: 800; color: var(--secondary); text-decoration: none; user-select: none; }
-.logo span { color: var(--primary); font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-right: 4px; }
+        .logo-wrap {
+            text-align: center;
+        }
+        .logo-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--secondary);
+            letter-spacing: 1px;
+        }
+        .logo-sub {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.9rem;
+            color: var(--primary);
+            letter-spacing: 2px;
+            margin-top: -4px;
+        }
 
-.nav-actions { display: flex; align-items: center; gap: 12px; }
-.user-auth-btn {
-background: #f8f4f0;
-border: 1px solid var(--border);
-padding: 8px 16px;
-border-radius: 20px;
-font-size: 0.9rem;
-font-weight: 700;
-color: var(--secondary);
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 6px;
-transition: var(--transition);
-}
-.user-auth-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-.admin-active-badge {
-display: none;
-background: #111;
-color: #c59b6d;
-border: 1px solid #c59b6d;
-padding: 6px 14px;
-border-radius: 20px;
-font-size: 0.8rem;
-font-weight: bold;
-align-items: center;
-gap: 6px;
-}
-.btn-admin-logout { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: 0.8rem; margin-right: 5px; }
+        .btn-auth {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--secondary);
+            transition: var(--transition);
+        }
+        .btn-auth:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
 
-.cart-icon-btn {
-position: relative;
-background: #f4ece4;
-border: none;
-width: 42px;
-height: 42px;
-border-radius: 50%;
-font-size: 1.2rem;
-color: var(--secondary);
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-transition: var(--transition);
-}
-.cart-icon-btn:hover { background: var(--primary); color: #fff; }
-.cart-badge {
-position: absolute;
-top: -4px;
-right: -4px;
-background: var(--danger);
-color: var(--white);
-font-size: 0.75rem;
-width: 20px;
-height: 20px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-weight: bold;
-}
+        .cart-btn {
+            position: relative;
+            background: #fff;
+            border: 1.5px solid var(--border);
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .cart-btn i { font-size: 1.1rem; color: var(--secondary); }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* Modal & Forms */
-.modal-overlay {
-position: fixed;
-top: 0; left: 0; width: 100%; height: 100%;
-background: rgba(0, 0, 0, 0.6);
-backdrop-filter: blur(4px);
-display: none;
-align-items: center;
-justify-content: center;
-z-index: 2000;
-padding: 15px;
-}
-.modal-content {
-background: #fff;
-border-radius: 16px;
-width: 100%;
-max-width: 520px;
-max-height: 90vh;
-overflow-y: auto;
-box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-padding: 25px;
-position: relative;
-}
-.modal-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 1px solid var(--border);
-padding-bottom: 12px;
-margin-bottom: 20px;
-}
-.modal-header h3 { font-size: 1.25rem; color: var(--secondary); display: flex; align-items: center; gap: 8px; }
-.modal-close { background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--gray); }
-.custom-form { display: flex; flex-direction: column; gap: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group label { font-size: 0.85rem; font-weight: 700; color: #444; }
-.form-group input, .form-group select {
-padding: 10px 14px;
-border: 1px solid #d8ccc0;
-border-radius: 8px;
-font-size: 0.95rem;
-outline: none;
-}
-.form-group input:focus, .form-group select:focus {
-border-color: var(--primary);
-box-shadow: 0 0 0 3px rgba(197, 155, 109, 0.2);
-}
-.btn-submit-gold {
-background: var(--primary);
-color: #fff;
-border: none;
-padding: 12px;
-border-radius: 8px;
-font-weight: 800;
-font-size: 1rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-transition: var(--transition);
-}
-.btn-submit-gold:hover { background: var(--primary-dark); }
-.btn-submit-green {
-background: #27ae60;
-color: #fff;
-border: none;
-padding: 12px;
-border-radius: 8px;
-font-weight: 800;
-font-size: 1rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 8px;
-}
+        /* قسم الترحيب والبانر */
+        .hero-section {
+            text-align: center;
+            padding: 35px 20px 20px;
+        }
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        .hero-desc {
+            font-size: 0.95rem;
+            color: var(--gray);
+            max-width: 500px;
+            margin: 0 auto 25px;
+            line-height: 1.6;
+        }
 
-/* Admin Panel */
-.admin-panel {
-background: #fff;
-border: 2px solid var(--primary);
-border-radius: 16px;
-padding: 25px;
-margin: 25px auto;
-max-width: 1200px;
-box-shadow: var(--shadow);
-display: none;
-}
-.admin-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 2px solid #f0e6dc;
-padding-bottom: 12px;
-margin-bottom: 20px;
-}
-.admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-.admin-tab-btn {
-background: #f3ede7;
-border: none;
-padding: 9px 18px;
-border-radius: 8px;
-font-weight: bold;
-cursor: pointer;
-}
-.admin-tab-btn.active { background: var(--primary); color: #fff; }
-.admin-form-grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-gap: 15px;
-align-items: flex-end;
-}
-.db-table-wrap { overflow-x: auto; margin-top: 10px; }
-.db-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-.db-table th, .db-table td { padding: 10px 12px; border: 1px solid #eee; text-align: right; }
-.db-table th { background: #fdf7f2; color: #333; font-weight: bold; }
+        /* أزرار الفلترة */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .filter-btn {
+            background: #fff;
+            border: 1.5px solid var(--border);
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--secondary);
+            transition: var(--transition);
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(162, 122, 77, 0.3);
+        }
 
-/* Layout & Cards */
-.container { max-width: 1250px; margin: 30px auto; padding: 0 20px; }
-.section-title-wrap { text-align: center; margin-bottom: 30px; }
-.section-title-wrap h2 { font-size: 2.2rem; color: var(--secondary); font-weight: 800; }
-.categories-nav { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 35px; }
-.cat-btn {
-background: var(--white);
-border: 1px solid var(--border);
-padding: 8px 20px;
-border-radius: 30px;
-cursor: pointer;
-font-weight: 600;
-font-size: 0.95rem;
-}
-.cat-btn.active, .cat-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+        /* شبكة المنتجات */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 25px;
+            padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .product-card {
+            background: var(--white);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(238, 222, 199, 0.6);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .product-img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        .product-info {
+            padding: 18px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .product-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .product-price {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 12px;
+        }
+        .product-price span {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--gray);
+        }
+        .btn-add-cart {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .btn-add-cart:hover {
+            background: var(--primary-dark);
+        }
 
-.dresses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-.dress-card {
-background: var(--white);
-border-radius: 14px;
-overflow: hidden;
-box-shadow: var(--shadow);
-display: flex;
-flex-direction: column;
-border: 1px solid rgba(0,0,0,0.03);
-position: relative;
-}
-.dress-img-box { position: relative; width: 100%; height: 380px; background: #eae5e0; overflow: hidden; }
-.dress-img-box img { width: 100%; height: 100%; object-fit: cover; }
-.watermark {
-position: absolute;
-top: 50%; left: 50%;
-transform: translate(-50%, -50%) rotate(-25deg);
-font-family: 'Playfair Display', serif;
-font-size: 2.2rem;
-font-weight: 600;
-font-style: italic;
-color: rgba(255, 255, 255, 0.45);
-text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
-pointer-events: none;
-letter-spacing: 5px;
-z-index: 5;
-}
-.dress-sku-badge {
-position: absolute; top: 12px; right: 12px;
-background: rgba(0,0,0,0.75); color: #fff; padding: 3px 8px;
-border-radius: 6px; font-size: 0.75rem; font-weight: bold; direction: ltr; z-index: 6;
-}
-.dress-category-tag {
-position: absolute; top: 40px; right: 12px;
-background: rgba(197, 155, 109, 0.9); color: #fff; padding: 2px 8px;
-border-radius: 15px; font-size: 0.7rem; z-index: 6;
-}
-.card-admin-actions { position: absolute; top: 12px; left: 12px; display: none; gap: 6px; z-index: 10; }
-.card-admin-btn {
-background: rgba(255,255,255,0.9); border: none; width: 30px; height: 30px;
-border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.card-admin-btn.del:hover { background: var(--danger); color: #fff; }
-.dress-content { padding: 18px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; }
-.dress-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; color: var(--secondary); }
-.dress-desc { color: var(--gray); font-size: 0.85rem; margin-bottom: 12px; min-height: 36px; }
+        /* النوافذ المنبثقة (Modals) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 15px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: #fff;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-close {
+            position: absolute;
+            top: 18px;
+            left: 18px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-.size-selector-wrap { margin-bottom: 15px; display: flex; flex-direction: column; gap: 6px; }
-.size-selector-label { font-size: 0.8rem; font-weight: bold; color: #555; }
-.size-options { display: flex; gap: 6px; flex-wrap: wrap; }
-.size-pill {
-background: #f5efe9; border: 1px solid #e2d6ca; padding: 4px 10px;
-border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
-}
-.size-pill.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+        /* نماذج الإدخال */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+        }
+        .btn-submit {
+            width: 100%;
+            background: var(--secondary);
+            color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+        .btn-submit:hover { background: #333; }
 
-.dress-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f2ece7; padding-top: 14px; }
-.dress-price { font-size: 1.3rem; font-weight: 800; color: var(--primary-dark); }
-.btn-add-cart {
-background: var(--secondary); color: #fff; border: none; padding: 8px 14px;
-border-radius: 8px; font-weight: bold; font-size: 0.85rem; cursor: pointer;
-display: flex; align-items: center; gap: 6px;
-}
-.btn-add-cart:hover { background: var(--primary); }
+        /* سلة التسوق داخل المودال */
+        .cart-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .cart-item-details { flex: 1; }
+        .cart-item-title { font-weight: 700; font-size: 0.95rem; }
+        .cart-item-price { color: var(--primary); font-weight: bold; font-size: 0.9rem; }
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            background: #f0f0f0;
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-whatsapp-checkout {
+            width: 100%;
+            background: var(--success);
+            color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+        .btn-whatsapp-checkout:hover { background: #1eb954; }
 
-/* Cart Drawer */
-.cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.45); display: none; z-index: 1050; }
-.cart-drawer {
-position: fixed; top: 0; left: -420px; width: 390px; max-width: 90%; height: 100%;
-background: var(--white); z-index: 1100; box-shadow: 5px 0 25px rgba(0,0,0,0.15);
-transition: left 0.3s ease; display: flex; flex-direction: column;
-}
-.cart-drawer.open { left: 0; }
-.cart-header { padding: 18px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #faf8f5; }
-.cart-items { flex-grow: 1; overflow-y: auto; padding: 15px 20px; display: flex; flex-direction: column; gap: 12px; }
-.cart-item { display: flex; align-items: center; gap: 12px; background: #fdfdfd; padding: 10px; border-radius: 10px; border: 1px solid #f0f0f0; }
-.cart-item img { width: 60px; height: 75px; object-fit: cover; border-radius: 6px; }
-.cart-item-info { flex-grow: 1; }
-.cart-item-title { font-size: 0.95rem; font-weight: 700; }
-.cart-item-meta { font-size: 0.75rem; color: #777; margin-top: 2px; }
-.cart-item-price { color: var(--primary-dark); font-size: 0.9rem; font-weight: bold; margin-top: 2px; }
-.cart-qty-control { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
-.qty-btn { background: #eee; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-.cart-item-remove { background: none; border: none; color: var(--danger); cursor: pointer; padding: 6px; font-size: 1rem; }
-.cart-footer { padding: 20px; border-top: 1px solid #eee; background: #faf8f5; }
-.cart-total-row { display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; margin-bottom: 15px; }
-.btn-checkout-wa {
-width: 100%; background: #25D366; color: #fff; border: none; padding: 14px;
-border-radius: 10px; font-size: 1.05rem; font-weight: 800; cursor: pointer;
-display: flex; align-items: center; justify-content: center; gap: 10px;
-}
-.toast {
-position: fixed; bottom: 25px; left: 25px; background: var(--secondary);
-color: #fff; padding: 12px 22px; border-radius: 30px; font-size: 0.95rem;
-display: none; z-index: 3000;
-}
-.admin-secret-link { color: #444; font-size: 0.75rem; text-decoration: none; cursor: pointer; }
-</style>
+        /* الفوتر */
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 25px;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-<div class="top-bar">
-<span><i class="fa-solid fa-gem"></i> بوتيك كيان | أفخم فساتين السهرة والزفاف والطافتة</span>
-<span>واتساب المبيعات: <a href="https://wa.me/966556746796" target="_blank" dir="ltr">+966 55 674 6796</a></span>
-</div>
+    <!-- الشريط العلوي -->
+    <div class="top-bar">
+        <span>✨ بوتيك كيان | أرقى فساتين السهرة والزفاف والمناسبات</span>
+        <a href="https://wa.me/966556746796" target="_blank"><i class="fab fa-whatsapp"></i> 966556746796+</a>
+    </div>
 
-<header>
-<div class="navbar">
-<a href="#" class="logo" id="logoTitle" title="انقر 4 مرات متتالية للدخول كمسؤول">بوتيك <span>KAYAN</span></a>
-<div class="nav-actions">
-<div class="admin-active-badge" id="adminBadge">
-<i class="fa-solid fa-user-shield"></i> لوحة الإدارة مفعّلة
-<button class="btn-admin-logout" onclick="adminLogout()" title="تسجيل خروج الإدارة">(خروج)</button>
-</div>
-<button class="user-auth-btn" id="userAuthBtn" onclick="openCustomerModal()">
-<i class="fa-solid fa-user"></i> <span id="userBtnLabel">تسجيل حساب / دخول</span>
-</button>
-<button class="cart-icon-btn" onclick="toggleCartDrawer()">
-<i class="fa-solid fa-bag-shopping"></i>
-<span class="cart-badge" id="cartBadge">0</span>
-</button>
-</div>
-</div>
-</header>
+    <!-- الهيدر الرئيسي -->
+    <header>
+        <div class="logo-wrap">
+            <div class="logo-title">بوتيك</div>
+            <div class="logo-sub">KAYAN</div>
+        </div>
 
-<!-- Admin Panel -->
-<div class="admin-panel" id="adminPanel">
-<div class="admin-header">
-<h3><i class="fa-solid fa-sliders" style="color:var(--primary)"></i> لوحة تحكم بوتيك كيان السحابية</h3>
-<button onclick="hideAdminPanel()" style="background:none; border:none; font-size:1.2rem; cursor:pointer;">×</button>
-</div>
-<div class="admin-tabs">
-<button class="admin-tab-btn active" id="tabAddBtn" onclick="switchAdminTab('add')"><i class="fa-solid fa-plus"></i> إضافة فستان جديد</button>
-<button class="admin-tab-btn" id="tabUsersBtn" onclick="switchAdminTab('users')"><i class="fa-solid fa-users"></i> قاعدة بيانات العملاء أونلاين (<span id="usersCountBadge">0</span>)</button>
-</div>
+        <div class="nav-actions">
+            <button class="btn-auth" onclick="toggleModal('authModal')">
+                <i class="fas fa-user"></i>
+                <span id="userStatusText">تسجيل حساب / دخول</span>
+            </button>
+            <div class="cart-btn" onclick="toggleModal('cartModal')">
+                <i class="fas fa-shopping-bag"></i>
+                <div class="cart-badge" id="cartBadge">0</div>
+            </div>
+        </div>
+    </header>
 
-<div id="adminTabAdd">
-<form class="custom-form admin-form-grid" id="addDressForm" onsubmit="handleAddNewDress(event)">
-<div class="form-group">
-<label>الرقم المرجعي (SKU) *</label>
-<input type="text" id="dressSku" placeholder="مثال: KY-901" required>
-</div>
-<div class="form-group">
-<label>اسم الفستان *</label>
-<input type="text" id="dressName" placeholder="مثال: فستان طافتة كايان ميكادو" required>
-</div>
-<div class="form-group">
-<label>القسم / التصنيف *</label>
-<select id="dressCategory" required>
-<option value="evening">فساتين سهرة</option>
-<option value="taffeta">فساتين طافتة</option>
-<option value="wedding">فساتين زفاف</option>
-<option value="casual">فساتين ناعمة</option>
-</select>
-</div>
-<div class="form-group">
-<label>السعر (ر.س) *</label>
-<input type="number" id="dressPrice" placeholder="مثال: 450" required min="1">
-</div>
-<div class="form-group">
-<label><i class="fa-solid fa-image"></i> رابط صورة الفستان (URL) *</label>
-<input type="url" id="dressImage" placeholder="https://images.unsplash.com/..." required>
-</div>
-<div class="form-group" style="grid-column: 1 / -1;">
-<label>وصف الفستان</label>
-<input type="text" id="dressDesc" placeholder="قماش طافتة فاخر مطرز مع قصة مميزة...">
-</div>
-<button type="submit" class="btn-submit-gold" style="height: 44px; grid-column: 1 / -1;">
-<i class="fa-solid fa-cloud-arrow-up"></i> حفظ ونشر الفستان سحابياً لجميع الزبائن
-</button>
-</form>
-</div>
+    <!-- واجهة الترحيب -->
+    <section class="hero-section">
+        <h1 class="hero-title">تشكيلة بوتيك كيان الحصرية</h1>
+        <p class="hero-desc">اختاري فستانكِ المفضل والمقاس المناسب لكِ، وأضيفيه للسلة لإتمام الطلب مباشرة عبر واتساب بكل سهولة وسرعة.</p>
 
-<div id="adminTabUsers" style="display:none;">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-<h4 style="color:var(--primary-dark);">العملاء المسجلين في الموقع (متصل سحابياً):</h4>
-<button onclick="clearUsersDb()" style="background:none; border:1px solid #ddd; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.8rem; color:#e74c3c;">تفريغ القائمة</button>
-</div>
-<div class="db-table-wrap">
-<table class="db-table">
-<thead>
-<tr>
-<th>#</th>
-<th>الاسم</th>
-<th>الهاتف</th>
-<th>البريد الإلكتروني</th>
-<th>كلمة السر</th>
-<th>المدينة</th>
-<th>تاريخ التسجيل</th>
-</tr>
-</thead>
-<tbody id="usersTableBody"></tbody>
-</table>
-</div>
-</div>
-</div>
+        <!-- أزرار الفلترة -->
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterCategory('all', this)">الكل</button>
+            <button class="filter-btn" onclick="filterCategory('soiree', this)">فساتين سهرة</button>
+            <button class="filter-btn" onclick="filterCategory('wedding', this)">فساتين زفاف</button>
+            <button class="filter-btn" onclick="filterCategory('soft', this)">فساتين ناعمة</button>
+        </div>
+    </section>
 
-<div class="container">
-<div class="section-title-wrap">
-<h2>تشكيلة بوتيك كيان الحصرية</h2>
-<p>اختاري فستانك المفضل والمقاس المناسب لك وأضيفيه للسلة لإرسال الطلب عبر واتساب</p>
-</div>
+    <!-- عرض الفساتين -->
+    <main class="products-grid" id="productsContainer">
+        <!-- يتم تحميل المنتجات هنا عبر JavaScript -->
+    </main>
 
-<div class="categories-nav">
-<button class="cat-btn active" onclick="filterCategory('all', this)">الكل</button>
-<button class="cat-btn" onclick="filterCategory('evening', this)">فساتين سهرة</button>
-<button class="cat-btn" onclick="filterCategory('taffeta', this)">فساتين طافتة</button>
-<button class="cat-btn" onclick="filterCategory('wedding', this)">فساتين زفاف</button>
-<button class="cat-btn" onclick="filterCategory('casual', this)">فساتين ناعمة</button>
-</div>
+    <!-- نافذة تسجيل الدخول / حساب جديد -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal-box">
+            <span class="modal-close" onclick="toggleModal('authModal')">&times;</span>
+            <h2 class="modal-title" id="authTitle">تسجيل الدخول</h2>
+            <form onsubmit="handleAuth(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="authName" placeholder="أدخل اسمك الكريم" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الجوال أو البريد</label>
+                    <input type="text" id="authContact" placeholder="05xxxxxxxx" required>
+                </div>
+                <button type="submit" class="btn-submit">دخول الحساب</button>
+            </form>
+        </div>
+    </div>
 
-<div class="dresses-grid" id="dressesContainer"></div>
-</div>
+    <!-- نافذة سلة التسوق -->
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-box">
+            <span class="modal-close" onclick="toggleModal('cartModal')">&times;</span>
+            <h2 class="modal-title">حقيبة التسوق 🛍️</h2>
+            
+            <div class="cart-items-list" id="cartItemsList">
+                <!-- المنتجات بالسلة -->
+            </div>
 
-<!-- Modal تسجيل الحساب -->
-<div class="modal-overlay" id="customerModal">
-<div class="modal-content">
-<div class="modal-header">
-<h3><i class="fa-solid fa-user-plus" style="color:var(--primary);"></i> حساب العميل في بوتيك كيان</h3>
-<button class="modal-close" onclick="closeCustomerModal()">×</button>
-</div>
-<form class="custom-form" id="custForm" onsubmit="handleCustomerSave(event)">
-<div class="form-group">
-<label>الاسم الكامل *</label>
-<input type="text" id="custName" placeholder="أدخل اسمك الكامل" required>
-</div>
-<div class="form-group">
-<label>رقم الهاتف *</label>
-<input type="tel" id="custPhone" placeholder="مثال: 0556746796" required>
-</div>
-<div class="form-group">
-<label>البريد الإلكتروني (الإيميل) *</label>
-<input type="email" id="custEmail" placeholder="example@email.com" required>
-</div>
-<div class="form-group">
-<label>كلمة السر *</label>
-<input type="password" id="custPassword" placeholder="••••••••" required minlength="4">
-</div>
-<div class="form-group">
-<label>المدينة / العنوان (اختياري)</label>
-<input type="text" id="custCity" placeholder="مثال: الرياض - حي النرجس">
-</div>
-<button type="submit" class="btn-submit-green" id="custSubmitBtn">
-<i class="fa-solid fa-check-circle"></i> إنشاء الحساب وتأكيده
-</button>
-</form>
-</div>
-</div>
+            <div style="margin: 20px 0; display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800;">
+                <span>الإجمالي:</span>
+                <span id="cartTotalPrice">0 ر.س</span>
+            </div>
 
-<!-- Modal الإدارة -->
-<div class="modal-overlay" id="adminLoginModal">
-<div class="modal-content">
-<div class="modal-header">
-<h3><i class="fa-solid fa-lock" style="color:var(--primary);"></i> دخول إدارة بوتيك كيان</h3>
-<button class="modal-close" onclick="closeAdminLoginModal()">×</button>
-</div>
-<form class="custom-form" onsubmit="handleAdminLogin(event)">
-<div class="form-group">
-<label>اسم المستخدم</label>
-<input type="text" id="adminUser" placeholder="admin" required>
-</div>
-<div class="form-group">
-<label>كلمة المرور</label>
-<input type="password" id="adminPass" placeholder="••••••••" required>
-</div>
-<button type="submit" class="btn-submit-gold">
-<i class="fa-solid fa-arrow-right-to-bracket"></i> تسجيل الدخول
-</button>
-</form>
-</div>
-</div>
+            <button class="btn-whatsapp-checkout" onclick="checkoutWhatsApp()">
+                <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
+            </button>
+        </div>
+    </div>
 
-<!-- Cart Drawer -->
-<div class="cart-overlay" id="cartOverlay" onclick="toggleCartDrawer()"></div>
-<div class="cart-drawer" id="cartDrawer">
-<div class="cart-header">
-<h3><i class="fa-solid fa-bag-shopping" style="color:var(--primary)"></i> حقيبة مشتريات كيان</h3>
-<button onclick="toggleCartDrawer()" style="background:none; border:none; font-size:1.4rem; cursor:pointer;">×</button>
-</div>
-<div class="cart-items" id="cartItemsContainer"></div>
-<div class="cart-footer">
-<div class="cart-total-row">
-<span>المجموع الكلي:</span>
-<span id="cartTotalPrice" style="color:var(--primary-dark)">0 ر.س</span>
-</div>
-<button class="btn-checkout-wa" onclick="checkoutToWhatsApp()">
-<i class="fa-brands fa-whatsapp" style="font-size:1.4rem;"></i> إتمام الطلب عبر واتساب
-</button>
-</div>
-</div>
+    <!-- نافذة لوحة الإدارة -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-box">
+            <span class="modal-close" onclick="toggleModal('adminModal')">&times;</span>
+            <h2 class="modal-title">لوحة إدارة المنتجات ⚙️</h2>
+            
+            <div id="adminLoginSection">
+                <div class="form-group">
+                    <label>كلمة سر الإدارة (الافتراضية: admin123)</label>
+                    <input type="password" id="adminPassword" placeholder="أدخل كلمة السر">
+                </div>
+                <button class="btn-submit" onclick="verifyAdmin()">دخول كمسؤول</button>
+            </div>
 
-<div class="toast" id="toastMsg"></div>
+            <div id="adminPanelSection" style="display: none;">
+                <h3 style="margin-bottom: 15px; font-size: 1.1rem;">إضافة فستان جديد</h3>
+                <div class="form-group">
+                    <label>اسم الفستان</label>
+                    <input type="text" id="newProdTitle" placeholder="مثال: فستان ملكي مطرز">
+                </div>
+                <div class="form-group">
+                    <label>القسم</label>
+                    <select id="newProdCategory">
+                        <option value="soiree">فساتين سهرة</option>
+                        <option value="wedding">فساتين زفاف</option>
+                        <option value="soft">فساتين ناعمة</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>السعر (ر.س)</label>
+                    <input type="number" id="newProdPrice" placeholder="مثال: 750">
+                </div>
+                <div class="form-group">
+                    <label>رابط صورة الفستان</label>
+                    <input type="url" id="newProdImg" placeholder="https://example.com/dress.jpg">
+                </div>
+                <button class="btn-submit" style="background: var(--primary);" onclick="addNewProduct()">إضافة المنتج للبوتيك</button>
+            </div>
+        </div>
+    </div>
 
-<footer style="text-align:center; padding:30px 20px 10px; color:#aaa; font-size:0.85rem;">
-<p>© 2026 جميع الحقوق محفوظة لـ بوتيك كيان | KAYAN BOUTIQUE</p>
-<span class="admin-secret-link" onclick="openAdminLoginModal()">• دخول الإدارة •</span>
-</footer>
+    <!-- الفوتر -->
+    <footer>
+        <p>© 2026 جميع الحقوق محفوظة لـ بوتيك كيان | KAYAN BOUTIQUE</p>
+        <p style="margin-top: 8px;">
+            <a onclick="toggleModal('adminModal')">دخول الإدارة</a>
+        </p>
+    </footer>
 
-<script>
-// ==================== 1. إعدادات Firebase الخاصة بك ==================== //
-const firebaseConfig = {
-apiKey: "AIzaSyACKagNZZABWtKbGZHDDngmo8w4zZp15IU",
-authDomain: "kayan-boutique.firebaseapp.com",
-databaseURL: "https://kayan-boutique-default-rtdb.firebaseio.com",
-projectId: "kayan-boutique",
-storageBucket: "kayan-boutique.firebasestorage.app",
-messagingSenderId: "974798681525",
-appId: "1:974798681525:web:95df48ecaa1743e941d5fc",
-measurementId: "G-SV78ZMG55L"
-};
+    <!-- منطق العمل البرمجي (JavaScript) -->
+    <script>
+        // 1. البيانات الافتراضية للمنتجات
+        const defaultProducts = [
+            { id: 1, title: 'فستان سهرة أسود ملكي', category: 'soiree', categoryName: 'فساتين سهرة', price: 850, img: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80' },
+            { id: 2, title: 'فستان زفاف دانتيل فاخر', category: 'wedding', categoryName: 'فساتين زفاف', price: 2800, img: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=600&q=80' },
+            { id: 3, title: 'فستان حرير ناعم زمردي', category: 'soft', categoryName: 'فساتين ناعمة', price: 540, img: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80' },
+            { id: 4, title: 'فستان سهرة وردي مطرز', category: 'soiree', categoryName: 'فساتين سهرة', price: 920, img: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80' },
+            { id: 5, title: 'فستان زفاف كلاسيك بذيل طويل', category: 'wedding', categoryName: 'فساتين زفاف', price: 3400, img: 'https://images.unsplash.com/photo-1546804784-896d0d517245?auto=format&fit=crop&w=600&q=80' },
+            { id: 6, title: 'فستان شيفون موف ناعم', category: 'soft', categoryName: 'فساتين ناعمة', price: 490, img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80' }
+        ];
 
-// تهيئة السحابة
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+        // تهيئة المنتجات والسلة من الذاكرة المحلية
+        let products = JSON.parse(localStorage.getItem('kayan_products')) || defaultProducts;
+        let cart = JSON.parse(localStorage.getItem('kayan_cart')) || [];
+        let currentCategory = 'all';
 
-const WHATSAPP_PHONE = "966556746796";
-const ADMIN_CREDENTIALS = { user: "admin", pass: "123456" };
-const AVAILABLE_SIZES = [
-{ code: "S", label: "سمول (S)" },
-{ code: "M", label: "ميديوم (M)" },
-{ code: "L", label: "لارج (L)" },
-{ code: "XL", label: "إكس لارج (XL)" },
-{ code: "XXL", label: "2 إكس لارج (XXL)" }
-];
+        // عرض المنتجات
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            container.innerHTML = '';
 
-let dresses = [];
-let cart = JSON.parse(localStorage.getItem('kayan_cart')) || [];
-let currentCategory = 'all';
-let selectedSizes = {};
-let customerData = JSON.parse(localStorage.getItem('kayan_customer')) || null;
-let registeredUsersDb = [];
-let isAdminLoggedIn = sessionStorage.getItem('is_admin_logged_in') === 'true';
+            const filtered = currentCategory === 'all' 
+                ? products 
+                : products.filter(p => p.category === currentCategory);
 
-// ==================== 2. المزامنة اللحظية مع السحابة (Real-time Sync) ==================== //
-db.ref('dresses').on('value', snapshot => {
-const data = snapshot.val();
-if (data) {
-dresses = Object.keys(data).map(key => ({ fbKey: key, ...data[key] }));
-} else {
-dresses = [];
-}
-renderDresses();
-});
+            if(filtered.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #888;">لا توجد منتجات في هذا القسم حالياً.</p>';
+                return;
+            }
 
-db.ref('customers').on('value', snapshot => {
-const data = snapshot.val();
-if (data) {
-registeredUsersDb = Object.keys(data).map(key => ({ fbKey: key, ...data[key] }));
-} else {
-registeredUsersDb = [];
-}
-renderAdminTables();
-});
+            filtered.forEach(product => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <img src="${product.img}" alt="${product.title}" class="product-img" onerror="this.src='https://via.placeholder.com/400x500?text=Kayan+Boutique'">
+                        <div class="product-info">
+                            <div>
+                                <div class="product-category">${product.categoryName || 'بوتيك كيان'}</div>
+                                <h3 class="product-title">${product.title}</h3>
+                                <div class="product-price">${product.price} <span>ر.س</span></div>
+                            </div>
+                            <button class="btn-add-cart" onclick="addToCart(${product.id})">
+                                <i class="fas fa-shopping-bag"></i> أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
 
-function renderDresses() {
-const container = document.getElementById('dressesContainer');
-container.innerHTML = '';
-const filtered = currentCategory === 'all' ? dresses : dresses.filter(d => d.category === currentCategory);
+        // فلترة الأقسام
+        function filterCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProducts();
+        }
 
-if (filtered.length === 0) {
-container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:40px; color:#888;">لا توجد فساتين معروضة حالياً. أضف فساتين من لوحة الإدارة لتظهر فوراً لجميع الزوار.</div>';
-return;
-}
+        // إدارة النوافذ المنبثقة
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('active');
+            if (id === 'cartModal') renderCart();
+        }
 
-filtered.forEach(dress => {
-const dressKey = dress.fbKey;
-if (selectedSizes[dressKey] === undefined) selectedSizes[dressKey] = 'M';
+        // إضافة منتج للسلة
+        function addToCart(id) {
+            const prod = products.find(p => p.id === id);
+            const exist = cart.find(item => item.id === id);
 
-const card = document.createElement('div');
-card.className = 'dress-card';
+            if (exist) {
+                exist.qty += 1;
+            } else {
+                cart.push({ ...prod, qty: 1 });
+            }
 
-const imgUrl = dress.image || 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80';
+            saveCart();
+            alert(`تمت إضافة "${prod.title}" إلى سلة التسوق بنجاح!`);
+        }
 
-card.innerHTML = &lt;div class="card-admin-actions" style="display:${isAdminLoggedIn ? 'flex' : 'none'}">
-<button class="card-admin-btn del" onclick="deleteDress('${dressKey}')" title="حذف الفستان نهائياً"&gt;&lt;i class="fa-solid fa-trash"&gt;&lt;/i&gt;&lt;/button&gt; &lt;/div&gt; &lt;div class="dress-img-box"&gt; &lt;img src="${imgUrl}" alt="${dress.name}"&gt; &lt;div class="watermark"&gt;KAYAN&lt;/div&gt; &lt;div class="dress-sku-badge"&gt;${dress.sku}</div>
-<div class="dress-category-tag">${dress.categoryLabel || 'كيان'}&lt;/div&gt; &lt;/div&gt; &lt;div class="dress-content"&gt; &lt;div&gt; &lt;h3 class="dress-title"&gt;${dress.name}</h3>
-<p class="dress-desc">${dress.desc || 'تشكيلة راقية من بوتيك كيان.'}&lt;/p&gt; &lt;div class="size-selector-wrap"&gt; &lt;div class="size-selector-label"&gt;المقاس:&lt;/div&gt; &lt;div class="size-options"&gt; ${AVAILABLE_SIZES.map(s => &lt;span class="size-pill${selectedSizes[dressKey] === s.code ? 'active' : ''}" onclick="selectSize('{s.code}')">latex
-{s.code}&lt;/span&gt; `).join('')} &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class="dress-footer"&gt; &lt;div class="dress-price"&gt;
+        // تعديل كمية المنتج بالسلة
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.id !== id);
+                }
+                saveCart();
+                renderCart();
+            }
+        }
 
-{dress.price} <span style="font-size:0.8rem;">ر.س</span></div>
-<button class="btn-add-cart" onclick="addToCart('${dressKey}')"&gt;&lt;i class="fa-solid fa-bag-shopping"&gt;&lt;/i&gt; إضافة للسلة&lt;/button&gt; &lt;/div&gt; &lt;/div&gt;;
-container.appendChild(card);
-});
-}
+        // حفظ وتحديث السلة
+        function saveCart() {
+            localStorage.setItem('kayan_cart', JSON.stringify(cart));
+            updateCartBadge();
+        }
 
-function selectSize(dressKey, size) {
-selectedSizes[dressKey] = size;
-renderDresses();
-}
+        function updateCartBadge() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').innerText = count;
+        }
 
-function filterCategory(cat, btn) {
-currentCategory = cat;
-document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-if (btn) btn.classList.add('active');
-renderDresses();
-}
+        // عرض عناصر السلة
+        function renderCart() {
+            const list = document.getElementById('cartItemsList');
+            const totalEl = document.getElementById('cartTotalPrice');
+            list.innerHTML = '';
 
-// ==================== 3. حفظ وحذف الفساتين عبر Firebase ==================== //
-function handleAddNewDress(e) {
-e.preventDefault();
-const sku = document.getElementById('dressSku').value.trim();
-const name = document.getElementById('dressName').value.trim();
-const category = document.getElementById('dressCategory').value;
-const price = Number(document.getElementById('dressPrice').value);
-const image = document.getElementById('dressImage').value.trim();
-const desc = document.getElementById('dressDesc').value.trim();
+            if (cart.length === 0) {
+                list.innerHTML = '<p style="text-align:center; padding: 25px; color:#888;">سلة التسوق فارغة حالياً.</p>';
+                totalEl.innerText = '0 ر.س';
+                return;
+            }
 
-const catLabels = { evening: "فساتين سهرة", taffeta: "فساتين طافتة", wedding: "فساتين زفاف", casual: "فساتين ناعمة" };
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                list.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.img}" class="cart-item-img" alt="${item.title}">
+                        <div class="cart-item-details">
+                            <div class="cart-item-title">${item.title}</div>
+                            <div class="cart-item-price">${item.price} ر.س</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span style="font-weight:bold;">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `;
+            });
 
-const newDress = {
-sku, name, category,
-categoryLabel: catLabels[category] || "كيان",
-price, image, desc,
-timestamp: Date.now()
-};
+            totalEl.innerText = `${total} ر.س`;
+        }
 
-db.ref('dresses').push(newDress).then(() => {
-document.getElementById('addDressForm').reset();
-showToast("تم نشر الفستان فوراً لدى جميع الأجهزة والزبائن!");
-}).catch(err => {
-alert("حدث خطأ أثناء الحفظ: " + err.message);
-});
-}
+        // إتمام الطلب وإرساله إلى الواتساب
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                alert('سلة التسوق فارغة! الرجاء إضافة فساتين أولاً.');
+                return;
+            }
 
-function deleteDress(dressKey) {
-if (confirm("هل تريد بالتأكيد حذف هذا الفستان نهائياً من المتجر لدى الجميع؟")) {
-db.ref('dresses').child(dressKey).remove().then(() => {
-showToast("تم حذف الفستان بنجاح.");
-});
-}
-}
+            let msg = `✨ *طلب جديد من متجر بوتيك كيان* ✨\n\n`;
+            let total = 0;
 
-// ==================== 4. تسجيل العملاء سحابياً ==================== //
-function handleCustomerSave(e) {
-e.preventDefault();
-const name = document.getElementById('custName').value.trim();
-const phone = document.getElementById('custPhone').value.trim();
-const email = document.getElementById('custEmail').value.trim();
-const password = document.getElementById('custPassword').value.trim();
-const city = document.getElementById('custCity').value.trim();
-const dateStr = new Date().toLocaleString('ar-SA');
+            cart.forEach((item, index) => {
+                const sub = item.price * item.qty;
+                total += sub;
+                msg += `${index + 1}) *${item.title}*\n- العدد: ${item.qty}\n- السعر: ${sub} ر.س\n\n`;
+            });
 
-customerData = { name, phone, email, password, city, date: dateStr };
-localStorage.setItem('kayan_customer', JSON.stringify(customerData));
+            msg += `💰 *المجموع الكلي:* ${total} ر.س\n`;
+            msg += `-----------------------------\nيرجى تأكيد الطلب وتزويدي بتفاصيل التوصيل والمقاسات.`;
 
-db.ref('customers').push(customerData).then(() => {
-updateUserButtonUI();
-closeCustomerModal();
-showToast("تم إنشاء الحساب وحفظه في السحابة بنجاح!");
-});
-}
+            const phone = "966556746796";
+            const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+            window.open(url, '_blank');
+        }
 
-function renderAdminTables() {
-document.getElementById('usersCountBadge').innerText = registeredUsersDb.length;
-const uBody = document.getElementById('usersTableBody');
-if (registeredUsersDb.length === 0) {
-uBody.innerHTML = <tr&gt;&lt;td colspan="7" style="text-align:center; color:#999;"&gt;لا يوجد عملاء مسجلين بعد&lt;/td&gt;&lt;/tr>;
-} else {
-uBody.innerHTML = registeredUsersDb.map((u, idx) => &lt;tr&gt; &lt;td&gt;${idx + 1}</td>
-<td><strong>{u.phone}">{u.email}</td>
-<td style="font-family:monospace; color:#c0392b; font-weight:bold;">{u.city || '—'}</td>
-<td>${u.date}&lt;/td&gt; &lt;/tr&gt;).join('');
-}
-}
+        // إدارة تسجيل الدخول
+        function handleAuth(e) {
+            e.preventDefault();
+            const name = document.getElementById('authName').value;
+            localStorage.setItem('kayan_user', name);
+            document.getElementById('userStatusText').innerText = `أهلاً، ${name}`;
+            toggleModal('authModal');
+            alert(`أهلاً بكِ يا ${name} في بوتيك كيان!`);
+        }
 
-function clearUsersDb() {
-if (confirm("هل تريد مسح جميع بيانات العملاء من السحابة؟")) {
-db.ref('customers').remove();
-}
-}
+        // فحص دخول الإدارة
+        function verifyAdmin() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass === 'admin123') {
+                document.getElementById('adminLoginSection').style.display = 'none';
+                document.getElementById('adminPanelSection').style.display = 'block';
+            } else {
+                alert('كلمة السر غير صحيحة!');
+            }
+        }
 
-// ==================== 5. السلة والطلب ==================== //
-function addToCart(dressKey) {
-const dress = dresses.find(d => d.fbKey === dressKey);
-if (!dress) return;
-const size = selectedSizes[dressKey] || 'M';
-const cartItemId = ``${dressKey}-{dress.name} إلى السلة!`);
-}
+        // إضافة منتج جديد للإدارة
+        function addNewProduct() {
+            const title = document.getElementById('newProdTitle').value;
+            const category = document.getElementById('newProdCategory').value;
+            const price = parseFloat(document.getElementById('newProdPrice').value);
+            const img = document.getElementById('newProdImg').value || 'https://via.placeholder.com/400x500?text=Kayan+Dress';
 
-function updateCartQty(cartItemId, delta) {
-const item = cart.find(i => i.cartItemId === cartItemId);
-if (!item) return;
-item.qty += delta;
-if (item.qty <= 0) cart = cart.filter(i => i.cartItemId !== cartItemId);
-localStorage.setItem('kayan_cart', JSON.stringify(cart));
-updateCartUI();
-}
+            const catMap = { soiree: 'فساتين سهرة', wedding: 'فساتين زفاف', soft: 'فساتين ناعمة' };
 
-function removeFromCart(cartItemId) {
-cart = cart.filter(i => i.cartItemId !== cartItemId);
-localStorage.setItem('kayan_cart', JSON.stringify(cart));
-updateCartUI();
-}
+            if (!title || isNaN(price)) {
+                alert('يرجى ملء جميع الحقول بشكل صحيح');
+                return;
+            }
 
-function updateCartUI() {
-const count = cart.reduce((sum, i) => sum + i.qty, 0);
-document.getElementById('cartBadge').innerText = count;
-const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-document.getElementById('cartTotalPrice').innerText = total + " ر.س";
-const container = document.getElementById('cartItemsContainer');
-if (cart.length === 0) {
-container.innerHTML = '<div style="text-align:center; padding:40px 10px; color:#999;"><i class="fa-solid fa-bag-shopping" style="font-size:3rem; margin-bottom:10px;"></i><p>حقيبة المشتريات فارغة</p></div>';
-return;
-}
-container.innerHTML = cart.map(item => &lt;div class="cart-item"&gt; &lt;img src="${item.image}" alt="${item.name}"&gt; &lt;div class="cart-item-info"&gt; &lt;div class="cart-item-title"&gt;${item.name}</div>
-<div class="cart-item-meta">رمز: ${item.sku} | مقاس: ${item.size}</div>
-<div class="cart-item-price">${item.price * item.qty} ر.س&lt;/div&gt; &lt;div class="cart-qty-control"&gt; &lt;button class="qty-btn" onclick="updateCartQty('${item.cartItemId}', -1)">-</button>
-<span>${item.qty}&lt;/span&gt; &lt;button class="qty-btn" onclick="updateCartQty('${item.cartItemId}', 1)">+</button>
-</div>
-</div>
-<button class="cart-item-remove" onclick="removeFromCart('${item.cartItemId}')"&gt;&lt;i class="fa-solid fa-trash-can"&gt;&lt;/i&gt;&lt;/button&gt; &lt;/div&gt;).join('');
-}
+            const newProduct = {
+                id: Date.now(),
+                title,
+                category,
+                categoryName: catMap[category],
+                price,
+                img
+            };
 
-function toggleCartDrawer(forceOpen = false) {
-const drawer = document.getElementById('cartDrawer');
-const overlay = document.getElementById('cartOverlay');
-if (forceOpen || !drawer.classList.contains('open')) {
-drawer.classList.add('open');
-overlay.style.display = 'block';
-} else {
-drawer.classList.remove('open');
-overlay.style.display = 'none';
-}
-}
+            products.unshift(newProduct);
+            localStorage.setItem('kayan_products', JSON.stringify(products));
+            renderProducts();
+            toggleModal('adminModal');
+            alert('تمت إضافة الفستان بنجاح إلى المتجر!');
+        }
 
-function checkoutToWhatsApp() {
-if (cart.length === 0) {
-alert("السلة فارغة، يرجى اختيار فساتين أولاً!");
-return;
-}
-let msg = "✨ طلب شراء جديد من بوتيك كيان | KAYAN ✨\n\n";
-if (customerData && customerData.name) {
-msg += "👤 بيانات العميل:\n";
-msg += • الاسم: ${customerData.name}\n; msg +=• رقم الهاتف: ${customerData.phone}\n;
-msg += "-------------------------------\n";
-}
-msg += "👗 تفاصيل الفساتين المطلوبة:\n";
-cart.forEach((item, index) => {
-msg += \n${index + 1}. ${item.name}*\n;
-msg += 🔖 الرقم المرجعي (SKU): ${item.sku}\n; msg += 📏 المقاس: ${item.size}\n;
-msg += 🔢 الكمية: ${item.qty}\n; msg += 💵 السعر: ${item.price * item.qty} ر.س\n;
-});
-const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-msg += "-------------------------------\n";
-msg += 💰 *المجموع الإجمالي: ${total} ر.س\n\n`;
-msg += "📍 أرجو تأكيد حجز الفساتين وتجهيز التوصيل من بوتيك كيان.";
-
-const url = https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(msg)}`;
-window.open(url, '_blank');
-}
-
-// ==================== 6. النوافذ ولوحة الإدارة ==================== //
-function openCustomerModal() {
-if (customerData) {
-document.getElementById('custName').value = customerData.name || '';
-document.getElementById('custPhone').value = customerData.phone || '';
-document.getElementById('custEmail').value = customerData.email || '';
-document.getElementById('custCity').value = customerData.city || '';
-}
-document.getElementById('customerModal').style.display = 'flex';
-}
-function closeCustomerModal() { document.getElementById('customerModal').style.display = 'none'; }
-function updateUserButtonUI() {
-const btnLabel = document.getElementById('userBtnLabel');
-btnLabel.innerText = (customerData && customerData.name) ? customerData.name : "تسجيل حساب / دخول";
-}
-
-let logoClicks = 0, clickTimer = null;
-document.getElementById('logoTitle').addEventListener('click', function(e) {
-e.preventDefault();
-logoClicks++;
-clearTimeout(clickTimer);
-if (logoClicks >= 4) { logoClicks = 0; openAdminLoginModal(); }
-else { clickTimer = setTimeout(() => { logoClicks = 0; }, 1200); }
-});
-
-function openAdminLoginModal() { document.getElementById('adminLoginModal').style.display = 'flex'; }
-function closeAdminLoginModal() { document.getElementById('adminLoginModal').style.display = 'none'; }
-
-function handleAdminLogin(e) {
-e.preventDefault();
-const u = document.getElementById('adminUser').value.trim();
-const p = document.getElementById('adminPass').value.trim();
-if (u === ADMIN_CREDENTIALS.user && p === ADMIN_CREDENTIALS.pass) {
-isAdminLoggedIn = true;
-sessionStorage.setItem('is_admin_logged_in', 'true');
-closeAdminLoginModal();
-updateAdminStateUI();
-showToast("تم فتح لوحة إدارة بوتيك كيان بنجاح.");
-} else {
-alert("بيانات الدخول غير صحيحة!");
-}
-}
-
-function adminLogout() {
-isAdminLoggedIn = false;
-sessionStorage.removeItem('is_admin_logged_in');
-updateAdminStateUI();
-showToast("تم تسجيل الخروج من وضع الإدارة.");
-}
-
-function hideAdminPanel() { document.getElementById('adminPanel').style.display = 'none'; }
-
-function updateAdminStateUI() {
-const adminPanel = document.getElementById('adminPanel');
-const adminBadge = document.getElementById('adminBadge');
-if (isAdminLoggedIn) {
-adminPanel.style.display = 'block';
-adminBadge.style.display = 'flex';
-renderAdminTables();
-} else {
-adminPanel.style.display = 'none';
-adminBadge.style.display = 'none';
-}
-renderDresses();
-}
-
-function switchAdminTab(tab) {
-document.getElementById('adminTabAdd').style.display = tab === 'add' ? 'block' : 'none';
-document.getElementById('adminTabUsers').style.display = tab === 'users' ? 'block' : 'none';
-document.getElementById('tabAddBtn').className = 'admin-tab-btn' + (tab === 'add' ? ' active' : '');
-document.getElementById('tabUsersBtn').className = 'admin-tab-btn' + (tab === 'users' ? ' active' : '');
-if (tab === 'users') renderAdminTables();
-}
-
-function showToast(text) {
-const toast = document.getElementById('toastMsg');
-toast.innerText = text;
-toast.style.display = 'block';
-setTimeout(() => { toast.style.display = 'none'; }, 3000);
-}
-
-// تشغيل الواجهة المبدئية
-updateAdminStateUI();
-updateCartUI();
-updateUserButtonUI();
-</script>
+        // تشغيل التهيئة عند فتح الصفحة
+        window.onload = function() {
+            renderProducts();
+            updateCartBadge();
+            const savedUser = localStorage.getItem('kayan_user');
+            if (savedUser) {
+                document.getElementById('userStatusText').innerText = `أهلاً، ${savedUser}`;
+            }
+        };
+    </script>
 </body>
 </html>
