@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بوتيك كيان | KAYAN BOUTIQUE</title>
+    
     <!-- خطوط جوجل وأيقونات Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- مكتبات Firebase SDK (CDN المتوافقة مع المتصفح) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
     <style>
         :root {
-            --primary: #a27a4d;
-            --primary-dark: #825f38;
+            --primary: #c59b6d;
+            --primary-dark: #a27a4d;
             --secondary: #1a1a1a;
             --light-bg: #fdfbf9;
             --white: #ffffff;
@@ -22,7 +27,7 @@
             --success: #25D366;
             --danger: #e74c3c;
             --shadow: 0 10px 25px rgba(0,0,0,0.06);
-            --transition: all 0.3s ease;
+            --transition: all 0.25s ease;
         }
 
         * {
@@ -36,242 +41,247 @@
             background-color: var(--light-bg);
             color: var(--secondary);
             overflow-x: hidden;
-            padding-bottom: 60px;
+            padding-bottom: 40px;
         }
 
-        /* الشريط العلوي */
         .top-bar {
             background: var(--secondary);
             color: #d8c3a5;
             padding: 8px 15px;
             font-size: 0.85rem;
-            text-align: center;
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
         }
+
         .top-bar a {
             color: var(--primary);
             text-decoration: none;
             font-weight: bold;
         }
 
-        /* الهيدر */
         header {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(8px);
-            padding: 15px 25px;
+            padding: 12px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
         }
 
         .logo-wrap {
             text-align: center;
+            cursor: pointer;
+            user-select: none;
         }
+
         .logo-title {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: var(--secondary);
             letter-spacing: 1px;
         }
+
         .logo-sub {
             font-family: 'Playfair Display', serif;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--primary);
             letter-spacing: 2px;
-            margin-top: -4px;
+            margin-top: -3px;
         }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .btn-auth {
             background: #fff;
             border: 1.5px solid var(--border);
-            padding: 8px 14px;
-            border-radius: 25px;
+            padding: 7px 12px;
+            border-radius: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-size: 0.85rem;
             font-weight: 700;
             color: var(--secondary);
             transition: var(--transition);
-        }
-        .btn-auth:hover {
-            border-color: var(--primary);
-            color: var(--primary);
         }
 
         .cart-btn {
             position: relative;
             background: #fff;
             border: 1.5px solid var(--border);
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: var(--transition);
         }
-        .cart-btn i { font-size: 1.1rem; color: var(--secondary); }
+
         .cart-badge {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -4px;
+            right: -4px;
             background: var(--danger);
             color: #fff;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: bold;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        /* قسم الترحيب والبانر */
         .hero-section {
             text-align: center;
-            padding: 35px 20px 20px;
-        }
-        .hero-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--secondary);
-            margin-bottom: 10px;
-        }
-        .hero-desc {
-            font-size: 0.95rem;
-            color: var(--gray);
-            max-width: 500px;
-            margin: 0 auto 25px;
-            line-height: 1.6;
+            padding: 25px 15px 15px;
         }
 
-        /* أزرار الفلترة */
+        .hero-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .hero-desc {
+            font-size: 0.9rem;
+            color: var(--gray);
+            max-width: 480px;
+            margin: 0 auto 20px;
+            line-height: 1.5;
+        }
+
         .filter-container {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
+
         .filter-btn {
             background: #fff;
             border: 1.5px solid var(--border);
-            padding: 10px 22px;
-            border-radius: 30px;
-            font-size: 0.95rem;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
             color: var(--secondary);
             transition: var(--transition);
         }
+
         .filter-btn.active, .filter-btn:hover {
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(162, 122, 77, 0.3);
         }
 
-        /* شبكة المنتجات */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 25px;
-            padding: 0 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 0 15px;
             max-width: 1200px;
             margin: 0 auto;
         }
+
         .product-card {
             background: var(--white);
-            border-radius: 18px;
+            border-radius: 14px;
             overflow: hidden;
             box-shadow: var(--shadow);
-            border: 1px solid rgba(238, 222, 199, 0.6);
-            transition: var(--transition);
+            border: 1px solid rgba(238, 222, 199, 0.5);
             display: flex;
             flex-direction: column;
+            position: relative;
         }
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
+
         .product-img {
             width: 100%;
-            height: 320px;
+            height: 280px;
             object-fit: cover;
-            background: #f0f0f0;
+            background: #f4f4f4;
         }
+
         .product-info {
-            padding: 18px;
+            padding: 14px;
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
+
         .product-category {
-            font-size: 0.8rem;
-            color: var(--primary);
+            font-size: 0.75rem;
+            color: var(--primary-dark);
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
+
         .product-title {
-            font-size: 1.15rem;
+            font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
+
         .product-price {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             font-weight: 800;
             color: var(--secondary);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
-        .product-price span {
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--gray);
-        }
+
         .btn-add-cart {
             width: 100%;
             background: var(--primary);
             color: #fff;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: var(--transition);
         }
-        .btn-add-cart:hover {
-            background: var(--primary-dark);
+
+        .btn-delete-prod {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(231, 76, 60, 0.9);
+            color: #fff;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
         }
 
-        /* النوافذ المنبثقة (Modals) */
+        /* نافذة المودال */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.55);
+            background: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
@@ -279,155 +289,167 @@
             z-index: 1000;
             padding: 15px;
         }
+
         .modal-overlay.active {
             display: flex;
         }
+
         .modal-box {
             background: #fff;
             width: 100%;
-            max-width: 480px;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            max-width: 440px;
+            border-radius: 16px;
+            padding: 22px;
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
         }
+
         .modal-close {
             position: absolute;
-            top: 18px;
-            left: 18px;
-            font-size: 1.4rem;
+            top: 15px;
+            left: 15px;
+            font-size: 1.3rem;
             cursor: pointer;
             color: var(--gray);
         }
+
         .modal-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             text-align: center;
         }
 
-        /* نماذج الإدخال */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
+
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
             font-weight: bold;
         }
-        .form-group input, .form-group select, .form-group textarea {
+
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 12px 15px;
+            padding: 10px 12px;
             border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-size: 0.95rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
             outline: none;
         }
-        .form-group input:focus, .form-group select:focus {
-            border-color: var(--primary);
-        }
+
         .btn-submit {
             width: 100%;
             background: var(--secondary);
             color: #fff;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 800;
-            font-size: 1rem;
             cursor: pointer;
-            margin-top: 10px;
-            transition: var(--transition);
+            margin-top: 8px;
         }
-        .btn-submit:hover { background: #333; }
 
-        /* سلة التسوق داخل المودال */
         .cart-items-list {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
+
         .cart-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding-bottom: 12px;
+            gap: 10px;
+            padding-bottom: 10px;
             border-bottom: 1px solid #eee;
         }
+
         .cart-item-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
             object-fit: cover;
         }
+
         .cart-item-details { flex: 1; }
-        .cart-item-title { font-weight: 700; font-size: 0.95rem; }
-        .cart-item-price { color: var(--primary); font-weight: bold; font-size: 0.9rem; }
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .cart-item-title { font-weight: 700; font-size: 0.9rem; }
+        .cart-item-price { color: var(--primary-dark); font-weight: bold; font-size: 0.85rem; }
+
         .qty-btn {
-            background: #f0f0f0;
+            background: #eee;
             border: none;
-            width: 26px;
-            height: 26px;
-            border-radius: 6px;
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
         }
+
         .btn-whatsapp-checkout {
             width: 100%;
             background: var(--success);
             color: #fff;
-            padding: 14px;
+            padding: 12px;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             font-weight: 800;
-            font-size: 1.05rem;
+            font-size: 1rem;
             cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            transition: var(--transition);
+            gap: 8px;
         }
-        .btn-whatsapp-checkout:hover { background: #1eb954; }
 
-        /* الفوتر */
+        /* إشعار فخم أنيق بدلاً من Alert */
+        .toast-notification {
+            position: fixed;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(26, 26, 26, 0.95);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--primary);
+        }
+
+        .toast-notification.active {
+            bottom: 30px;
+        }
+
         footer {
-            margin-top: 50px;
+            margin-top: 40px;
             text-align: center;
-            padding: 25px;
+            padding: 20px;
             background: #fff;
             border-top: 1px solid var(--border);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--gray);
-        }
-        footer a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: bold;
-            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-    <!-- الشريط العلوي -->
     <div class="top-bar">
-        <span>✨ بوتيك كيان | أرقى فساتين السهرة والزفاف والمناسبات</span>
+        <span>✨ بوتيك كيان | أفخم فساتين السهرة والزفاف</span>
         <a href="https://wa.me/966556746796" target="_blank"><i class="fab fa-whatsapp"></i> 966556746796+</a>
     </div>
 
-    <!-- الهيدر الرئيسي -->
     <header>
-        <div class="logo-wrap">
+        <div class="logo-wrap" ondblclick="triggerSecretAdmin()">
             <div class="logo-title">بوتيك</div>
             <div class="logo-sub">KAYAN</div>
         </div>
@@ -444,12 +466,10 @@
         </div>
     </header>
 
-    <!-- واجهة الترحيب -->
     <section class="hero-section">
         <h1 class="hero-title">تشكيلة بوتيك كيان الحصرية</h1>
-        <p class="hero-desc">اختاري فستانكِ المفضل والمقاس المناسب لكِ، وأضيفيه للسلة لإتمام الطلب مباشرة عبر واتساب بكل سهولة وسرعة.</p>
+        <p class="hero-desc">اختاري فستانكِ المفضل والمقاس المناسب لكِ وأضيفيه للسلة لإرسال الطلب عبر واتساب.</p>
 
-        <!-- أزرار الفلترة -->
         <div class="filter-container">
             <button class="filter-btn active" onclick="filterCategory('all', this)">الكل</button>
             <button class="filter-btn" onclick="filterCategory('soiree', this)">فساتين سهرة</button>
@@ -458,26 +478,25 @@
         </div>
     </section>
 
-    <!-- عرض الفساتين -->
     <main class="products-grid" id="productsContainer">
-        <!-- يتم تحميل المنتجات هنا عبر JavaScript -->
+        <!-- المنتجات تظهر تلقائياً من Firebase -->
     </main>
 
-    <!-- نافذة تسجيل الدخول / حساب جديد -->
+    <!-- نافذة تسجيل الدخول -->
     <div class="modal-overlay" id="authModal">
         <div class="modal-box">
             <span class="modal-close" onclick="toggleModal('authModal')">&times;</span>
-            <h2 class="modal-title" id="authTitle">تسجيل الدخول</h2>
+            <h2 class="modal-title">تسجيل الحساب</h2>
             <form onsubmit="handleAuth(event)">
                 <div class="form-group">
                     <label>الاسم الكامل</label>
-                    <input type="text" id="authName" placeholder="أدخل اسمك الكريم" required>
+                    <input type="text" id="authName" placeholder="أدخلي اسمكِ الكريم" required>
                 </div>
                 <div class="form-group">
                     <label>رقم الجوال أو البريد</label>
                     <input type="text" id="authContact" placeholder="05xxxxxxxx" required>
                 </div>
-                <button type="submit" class="btn-submit">دخول الحساب</button>
+                <button type="submit" class="btn-submit">حفظ ودخول</button>
             </form>
         </div>
     </div>
@@ -487,41 +506,36 @@
         <div class="modal-box">
             <span class="modal-close" onclick="toggleModal('cartModal')">&times;</span>
             <h2 class="modal-title">حقيبة التسوق 🛍️</h2>
-            
-            <div class="cart-items-list" id="cartItemsList">
-                <!-- المنتجات بالسلة -->
-            </div>
-
-            <div style="margin: 20px 0; display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800;">
+            <div class="cart-items-list" id="cartItemsList"></div>
+            <div style="margin: 15px 0; display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 800;">
                 <span>الإجمالي:</span>
                 <span id="cartTotalPrice">0 ر.س</span>
             </div>
-
             <button class="btn-whatsapp-checkout" onclick="checkoutWhatsApp()">
                 <i class="fab fa-whatsapp"></i> إرسال الطلب عبر واتساب
             </button>
         </div>
     </div>
 
-    <!-- نافذة لوحة الإدارة -->
+    <!-- نافذة الإدارة (مخفية) -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal-box">
             <span class="modal-close" onclick="toggleModal('adminModal')">&times;</span>
-            <h2 class="modal-title">لوحة إدارة المنتجات ⚙️</h2>
+            <h2 class="modal-title">لوحة الإدارة السحابية ⚙️</h2>
             
             <div id="adminLoginSection">
                 <div class="form-group">
-                    <label>كلمة سر الإدارة (الافتراضية: admin123)</label>
-                    <input type="password" id="adminPassword" placeholder="أدخل كلمة السر">
+                    <label>كلمة السر الخاصة</label>
+                    <input type="password" id="adminPassword" placeholder="أدخل كلمة المرور">
                 </div>
-                <button class="btn-submit" onclick="verifyAdmin()">دخول كمسؤول</button>
+                <button class="btn-submit" onclick="verifyAdmin()">تسجيل الدخول</button>
             </div>
 
             <div id="adminPanelSection" style="display: none;">
-                <h3 style="margin-bottom: 15px; font-size: 1.1rem;">إضافة فستان جديد</h3>
+                <h3 style="margin-bottom: 12px; font-size: 1rem;">إضافة فستان جديد لجميع الزوار</h3>
                 <div class="form-group">
                     <label>اسم الفستان</label>
-                    <input type="text" id="newProdTitle" placeholder="مثال: فستان ملكي مطرز">
+                    <input type="text" id="newProdTitle" placeholder="مثال: فستان كريب مطرز">
                 </div>
                 <div class="form-group">
                     <label>القسم</label>
@@ -533,41 +547,81 @@
                 </div>
                 <div class="form-group">
                     <label>السعر (ر.س)</label>
-                    <input type="number" id="newProdPrice" placeholder="مثال: 750">
+                    <input type="number" id="newProdPrice" placeholder="مثال: 650">
                 </div>
                 <div class="form-group">
-                    <label>رابط صورة الفستان</label>
-                    <input type="url" id="newProdImg" placeholder="https://example.com/dress.jpg">
+                    <label>رابط الصورة</label>
+                    <input type="url" id="newProdImg" placeholder="https://...">
                 </div>
-                <button class="btn-submit" style="background: var(--primary);" onclick="addNewProduct()">إضافة المنتج للبوتيك</button>
+                <button class="btn-submit" style="background: var(--primary);" onclick="addNewProductToFirebase()">نشر المنتج في البوتيك</button>
             </div>
         </div>
     </div>
 
-    <!-- الفوتر -->
+    <!-- عنصر الإشعار الفخم -->
+    <div id="toastNotification" class="toast-notification">
+        <i class="fas fa-check-circle" style="color: var(--primary);"></i>
+        <span id="toastMessage"></span>
+    </div>
+
     <footer>
         <p>© 2026 جميع الحقوق محفوظة لـ بوتيك كيان | KAYAN BOUTIQUE</p>
-        <p style="margin-top: 8px;">
-            <a onclick="toggleModal('adminModal')">دخول الإدارة</a>
-        </p>
     </footer>
 
-    <!-- منطق العمل البرمجي (JavaScript) -->
     <script>
-        // 1. البيانات الافتراضية للمنتجات
-        const defaultProducts = [
-            { id: 1, title: 'فستان سهرة أسود ملكي', category: 'soiree', categoryName: 'فساتين سهرة', price: 850, img: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80' },
-            { id: 2, title: 'فستان زفاف دانتيل فاخر', category: 'wedding', categoryName: 'فساتين زفاف', price: 2800, img: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=600&q=80' },
-            { id: 3, title: 'فستان حرير ناعم زمردي', category: 'soft', categoryName: 'فساتين ناعمة', price: 540, img: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80' },
-            { id: 4, title: 'فستان سهرة وردي مطرز', category: 'soiree', categoryName: 'فساتين سهرة', price: 920, img: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=600&q=80' },
-            { id: 5, title: 'فستان زفاف كلاسيك بذيل طويل', category: 'wedding', categoryName: 'فساتين زفاف', price: 3400, img: 'https://images.unsplash.com/photo-1546804784-896d0d517245?auto=format&fit=crop&w=600&q=80' },
-            { id: 6, title: 'فستان شيفون موف ناعم', category: 'soft', categoryName: 'فساتين ناعمة', price: 490, img: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=600&q=80' }
-        ];
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyACKagNZZABWtKbGZHDDngmo8w4zZp15IU",
+            authDomain: "kayan-boutique.firebaseapp.com",
+            projectId: "kayan-boutique",
+            storageBucket: "kayan-boutique.firebasestorage.app",
+            messagingSenderId: "974798681525",
+            appId: "1:974798681525:web:95df48ecaa1743e941d5fc",
+            measurementId: "G-SV78ZMG55L"
+        };
 
-        // تهيئة المنتجات والسلة من الذاكرة المحلية
-        let products = JSON.parse(localStorage.getItem('kayan_products')) || defaultProducts;
+        // تهيئة فايربيس
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let products = [];
         let cart = JSON.parse(localStorage.getItem('kayan_cart')) || [];
         let currentCategory = 'all';
+        let isAdminLoggedIn = false;
+
+        // إشعار Toast أنيق
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        // جلب المنتجات بشكل لحظي (Realtime) من Firebase
+        db.ref('products').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                products = Object.keys(data).map(key => ({
+                    id: key,
+                    ...data[key]
+                }));
+            } else {
+                // إذا كانت قاعدة البيانات فارغة، إضافة منتجات أولية تجريبية
+                seedInitialProducts();
+            }
+            renderProducts();
+        });
+
+        function seedInitialProducts() {
+            const defaults = [
+                { title: 'فستان سهرة أسود ملكي', category: 'soiree', categoryName: 'فساتين سهرة', price: 850, img: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=600&q=80' },
+                { title: 'فستان زفاف دانتيل فاخر', category: 'wedding', categoryName: 'فساتين زفاف', price: 2800, img: 'https://images.unsplash.com/photo-1594552072238-b8a33785b261?auto=format&fit=crop&w=600&q=80' },
+                { title: 'فستان حرير ناعم زمردي', category: 'soft', categoryName: 'فساتين ناعمة', price: 540, img: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80' }
+            ];
+            defaults.forEach(p => db.ref('products').push(p));
+        }
 
         // عرض المنتجات
         function renderProducts() {
@@ -578,23 +632,24 @@
                 ? products 
                 : products.filter(p => p.category === currentCategory);
 
-            if(filtered.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #888;">لا توجد منتجات في هذا القسم حالياً.</p>';
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 40px; color: #888;">لا توجد فساتين معروضة حالياً.</p>';
                 return;
             }
 
-            filtered.forEach(product => {
+            filtered.forEach(p => {
                 container.innerHTML += `
                     <div class="product-card">
-                        <img src="${product.img}" alt="${product.title}" class="product-img" onerror="this.src='https://via.placeholder.com/400x500?text=Kayan+Boutique'">
+                        ${isAdminLoggedIn ? `<button class="btn-delete-prod" style="display:block;" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>` : ''}
+                        <img src="${p.img}" alt="${p.title}" class="product-img" onerror="this.src='https://via.placeholder.com/400x500?text=KAYAN'">
                         <div class="product-info">
                             <div>
-                                <div class="product-category">${product.categoryName || 'بوتيك كيان'}</div>
-                                <h3 class="product-title">${product.title}</h3>
-                                <div class="product-price">${product.price} <span>ر.س</span></div>
+                                <div class="product-category">${p.categoryName || 'بوتيك كيان'}</div>
+                                <h3 class="product-title">${p.title}</h3>
+                                <div class="product-price">${p.price} <span>ر.س</span></div>
                             </div>
-                            <button class="btn-add-cart" onclick="addToCart(${product.id})">
-                                <i class="fas fa-shopping-bag"></i> أضف للسلة
+                            <button class="btn-add-cart" onclick="addToCart('${p.id}')">
+                                <i class="fas fa-shopping-bag"></i> أضف للحقيبة
                             </button>
                         </div>
                     </div>
@@ -602,7 +657,7 @@
             });
         }
 
-        // فلترة الأقسام
+        // الفلترة
         function filterCategory(cat, btn) {
             currentCategory = cat;
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -610,17 +665,18 @@
             renderProducts();
         }
 
-        // إدارة النوافذ المنبثقة
+        // النوافذ
         function toggleModal(id) {
             const modal = document.getElementById(id);
             modal.classList.toggle('active');
             if (id === 'cartModal') renderCart();
         }
 
-        // إضافة منتج للسلة
+        // السلة
         function addToCart(id) {
-            const prod = products.find(p => p.id === id);
-            const exist = cart.find(item => item.id === id);
+            const prod = products.find(p => p.id == id);
+            if (!prod) return;
+            const exist = cart.find(item => item.id == id);
 
             if (exist) {
                 exist.qty += 1;
@@ -629,23 +685,21 @@
             }
 
             saveCart();
-            alert(`تمت إضافة "${prod.title}" إلى سلة التسوق بنجاح!`);
+            showToast(`تمت إضافة "${prod.title}" إلى حقيبة التسوق`);
         }
 
-        // تعديل كمية المنتج بالسلة
         function changeQty(id, delta) {
-            const item = cart.find(i => i.id === id);
+            const item = cart.find(i => i.id == id);
             if (item) {
                 item.qty += delta;
                 if (item.qty <= 0) {
-                    cart = cart.filter(i => i.id !== id);
+                    cart = cart.filter(i => i.id != id);
                 }
                 saveCart();
                 renderCart();
             }
         }
 
-        // حفظ وتحديث السلة
         function saveCart() {
             localStorage.setItem('kayan_cart', JSON.stringify(cart));
             updateCartBadge();
@@ -656,21 +710,21 @@
             document.getElementById('cartBadge').innerText = count;
         }
 
-        // عرض عناصر السلة
         function renderCart() {
             const list = document.getElementById('cartItemsList');
             const totalEl = document.getElementById('cartTotalPrice');
             list.innerHTML = '';
 
             if (cart.length === 0) {
-                list.innerHTML = '<p style="text-align:center; padding: 25px; color:#888;">سلة التسوق فارغة حالياً.</p>';
+                list.innerHTML = '<p style="text-align:center; padding: 20px; color:#888;">حقيبة التسوق فارغة.</p>';
                 totalEl.innerText = '0 ر.س';
                 return;
             }
 
             let total = 0;
             cart.forEach(item => {
-                total += item.price * item.qty;
+                const sub = item.price * item.qty;
+                total += sub;
                 list.innerHTML += `
                     <div class="cart-item">
                         <img src="${item.img}" class="cart-item-img" alt="${item.title}">
@@ -678,65 +732,67 @@
                             <div class="cart-item-title">${item.title}</div>
                             <div class="cart-item-price">${item.price} ر.س</div>
                         </div>
-                        <div class="cart-item-controls">
-                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
-                            <span style="font-weight:bold;">${item.qty}</span>
-                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                        <div style="display:flex; align-items:center; gap:6px;">
+                            <button class="qty-btn" onclick="changeQty('${item.id}', -1)">-</button>
+                            <span style="font-weight:bold; font-size:0.9rem;">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
                         </div>
                     </div>
                 `;
             });
-
             totalEl.innerText = `${total} ر.س`;
         }
 
-        // إتمام الطلب وإرساله إلى الواتساب
+        // إرسال الطلب واتساب
         function checkoutWhatsApp() {
             if (cart.length === 0) {
-                alert('سلة التسوق فارغة! الرجاء إضافة فساتين أولاً.');
+                showToast('حقيبة التسوق فارغة حالياً');
                 return;
             }
 
-            let msg = `✨ *طلب جديد من متجر بوتيك كيان* ✨\n\n`;
+            let msg = `✨ *طلب جديد من بوتيك كيان* ✨\n\n`;
             let total = 0;
-
             cart.forEach((item, index) => {
                 const sub = item.price * item.qty;
                 total += sub;
                 msg += `${index + 1}) *${item.title}*\n- العدد: ${item.qty}\n- السعر: ${sub} ر.س\n\n`;
             });
-
             msg += `💰 *المجموع الكلي:* ${total} ر.س\n`;
-            msg += `-----------------------------\nيرجى تأكيد الطلب وتزويدي بتفاصيل التوصيل والمقاسات.`;
+            msg += `-----------------------------\nيرجى تأكيد توفر الفساتين وتنسيق التوصيل والمقاسات.`;
 
-            const phone = "966556746796";
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
-            window.open(url, '_blank');
+            window.open(`https://wa.me/966556746796?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // إدارة تسجيل الدخول
+        // تسجيل الدخول
         function handleAuth(e) {
             e.preventDefault();
             const name = document.getElementById('authName').value;
             localStorage.setItem('kayan_user', name);
             document.getElementById('userStatusText').innerText = `أهلاً، ${name}`;
             toggleModal('authModal');
-            alert(`أهلاً بكِ يا ${name} في بوتيك كيان!`);
+            showToast(`أهلاً بكِ في بوتيك كيان يا ${name}`);
         }
 
-        // فحص دخول الإدارة
+        // طرق فتح الإدارة المخفية
+        function triggerSecretAdmin() {
+            toggleModal('adminModal');
+        }
+
         function verifyAdmin() {
             const pass = document.getElementById('adminPassword').value;
-            if (pass === 'admin123') {
+            if (pass === '209416') {
+                isAdminLoggedIn = true;
                 document.getElementById('adminLoginSection').style.display = 'none';
                 document.getElementById('adminPanelSection').style.display = 'block';
+                showToast('تم التحقق بنجاح بصلاحية الإدارة');
+                renderProducts();
             } else {
-                alert('كلمة السر غير صحيحة!');
+                showToast('كلمة السر غير صحيحة!');
             }
         }
 
-        // إضافة منتج جديد للإدارة
-        function addNewProduct() {
+        // إضافة فستان للسحابة
+        function addNewProductToFirebase() {
             const title = document.getElementById('newProdTitle').value;
             const category = document.getElementById('newProdCategory').value;
             const price = parseFloat(document.getElementById('newProdPrice').value);
@@ -745,33 +801,45 @@
             const catMap = { soiree: 'فساتين سهرة', wedding: 'فساتين زفاف', soft: 'فساتين ناعمة' };
 
             if (!title || isNaN(price)) {
-                alert('يرجى ملء جميع الحقول بشكل صحيح');
+                showToast('يرجى ملء جميع الحقول');
                 return;
             }
 
-            const newProduct = {
-                id: Date.now(),
+            db.ref('products').push({
                 title,
                 category,
                 categoryName: catMap[category],
                 price,
                 img
-            };
-
-            products.unshift(newProduct);
-            localStorage.setItem('kayan_products', JSON.stringify(products));
-            renderProducts();
-            toggleModal('adminModal');
-            alert('تمت إضافة الفستان بنجاح إلى المتجر!');
+            }).then(() => {
+                showToast('تم نشر الفستان وسيظهر لجميع الزوار فوراً!');
+                document.getElementById('newProdTitle').value = '';
+                document.getElementById('newProdPrice').value = '';
+                document.getElementById('newProdImg').value = '';
+                toggleModal('adminModal');
+            });
         }
 
-        // تشغيل التهيئة عند فتح الصفحة
+        // حذف منتج
+        function deleteProduct(id) {
+            if (confirm('هل أنت متأكد من حذف هذا الفستان؟')) {
+                db.ref('products/' + id).remove().then(() => {
+                    showToast('تم حذف الفستان من المتجر');
+                });
+            }
+        }
+
         window.onload = function() {
-            renderProducts();
             updateCartBadge();
             const savedUser = localStorage.getItem('kayan_user');
             if (savedUser) {
                 document.getElementById('userStatusText').innerText = `أهلاً، ${savedUser}`;
+            }
+
+            // إمكانية الدخول للإدارة بكتابة ?admin في الرابط
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('admin')) {
+                toggleModal('adminModal');
             }
         };
     </script>
